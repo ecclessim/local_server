@@ -1,3 +1,7 @@
+"""
+This file contains the main code for the Flask Web Server
+
+"""
 from flask import Flask, request
 from pandas_datareader import data as web
 import numpy as np
