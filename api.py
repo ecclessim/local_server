@@ -324,6 +324,16 @@ def get_time_series():
             "Error": "Unable to fetch data"
         }
 
+@app.route("/check_stock_exist", methods=["GET"])
+def check_stock_exist():
+    ticker = request.args.get("ticker")
+    previous_date = (datetime.today() - timedelta(days=5)).strftime('%Y-%m-%d')
+    today = datetime.today().strftime('%Y-%m-%d')
+    data_check = True if len(yf.download(ticker, start=previous_date, end=today)) >= 1 else False
+    return {
+        'exist': data_check,
+    }
+
 @app.route("/get_stock_price", methods=["GET"])
 def get_stock_price():
     tickers = request.args.get("tickers")
