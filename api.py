@@ -177,7 +177,7 @@ def sharpe_allocation():
         "Suggested Allocation" : suggested_allocation,
         "Leftover($)" :  allocation[1]
     }
-
+# Compute the sortino allocation for a given set of assets 
 @app.route("/calculate_sortino", methods=["GET"])
 def sortino_allocation():
     assets = request.args.get('assets')
@@ -225,6 +225,7 @@ def sortino_allocation():
         "Leftover($)" :  round(allocation[1],2)
     }
 
+# Compute the minimum volatility allocation for a given set of assets
 @app.route("/calculate_min_volatility", methods=["GET"])
 def min_volatility_allocation():
     # mu = expected_returns.mean_historical_return(df)
@@ -272,6 +273,8 @@ def min_volatility_allocation():
         "Suggested Allocation" : suggested_allocation,
         "Leftover($)" :  round(allocation[1],2)
     }
+
+# Retrieve company information through a provided ticker, and return the information in a json format
 @app.route("/get_company_info", methods=["GET"])
 def get_company_info():
     ticker = request.args.get('ticker')
@@ -308,7 +311,7 @@ def get_company_info():
     except Exception as e:
         print(f"Failed to fetch data: {e}")
 
-
+# Time series information retrieval for a given ticker (to be used in the candle stick rendering)
 @app.route("/get_time_series", methods=["GET"])
 def get_time_series():
     ticker = request.args.get("ticker")
@@ -324,6 +327,7 @@ def get_time_series():
             "Error": "Unable to fetch data"
         }
 
+# Validation function to ensure stocks added to portfolios are valid
 @app.route("/check_stock_exist", methods=["GET"])
 def check_stock_exist():
     ticker = request.args.get("ticker")
@@ -334,6 +338,7 @@ def check_stock_exist():
         'exist': data_check,
     }
 
+# Function to retrieve daily stock prices for a given ticker
 @app.route("/get_stock_price", methods=["GET"])
 def get_stock_price():
     tickers = request.args.get("tickers")
@@ -347,7 +352,7 @@ def get_stock_price():
         price_list.append({'ticker': ticker, 'last_quote': latest_quote,'previous_close': previous_close, 'daily_change': daily_change, 'daily_change_pct': daily_change_pct})
     return json.dumps(price_list,indent=2)
 
-
+# Implementation of Deep Learning model to predict optimal stock allocation using FinRL library
 import RL_Model
 @app.route("/ppo_portfolio_analysis", methods=['GET'])
 def ppo_portfolio_analysis():
@@ -389,7 +394,7 @@ def train_ppo_model():
             "status": "failed: "+str(e),
         }
 
-
+# Main function - runs the server
 if __name__ == '__main__':
     WSGIRequestHandler.protocol_version = "HTTP/1.1"
     app.run(debug=True,host='0.0.0.0', port=5000)
